@@ -1,0 +1,27 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-cluster
+spec:
+  instances: 1  # Single instance for cost savings
+  
+  # PostgreSQL 15
+  imageName: ghcr.io/cloudnative-pg/postgresql:15
+  
+  # Storage
+  storage:
+    size: 5Gi
+    storageClass: default
+  
+  # Bootstrap with initial database
+  bootstrap:
+    initdb:
+      database: mirrordb
+      owner: postgres
+      postInitSQL:
+        - CREATE TABLE IF NOT EXISTS transformations (
+            id SERIAL PRIMARY KEY,
+            original_word TEXT NOT NULL,
+            transformed_word TEXT NOT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT NOW()
+          );

@@ -1,0 +1,22 @@
+replicaCount: 2
+
+image:
+  repository: mirrorapiregistry.azurecr.io/mirror-api  # Update with your ACR name
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 4004
+
+ingress:
+  enabled: true
+  className: nginx
+  host: ""  # Will use the ingress IP
+
+database:
+  host: postgres-cluster-rw  # CloudNativePG service name
+  port: 5432
+  name: mirrordb
+  user: postgres
+  # Password will come from secret

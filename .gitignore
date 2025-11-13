@@ -1,0 +1,33 @@
+# Terraform state files - never commit these
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Sensitive variable files
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+
+# Helm chart dependencies
+charts/
+*.tgz
+
+# Kubernetes secrets
+*-secret.yaml
+
+# IDE stuff
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS junk
+.DS_Store
+Thumbs.db
