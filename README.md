@@ -255,13 +255,32 @@ echo
 
 **Note**: The Helm chart will automatically reference this secret, so you don't need to manually create any additional secrets. The application will securely access the database credentials from the `postgres-cluster-app` secret.
 
-### Step 4: Verify Database
+### Step 4: Set PostgreSQL Password (Important!)
+
+CloudNativePG creates a secret with credentials but doesn't set the password on the postgres user by default. You must set it manually:
+
+```bash
+# Get the password from the secret and set it on the postgres user
+PASSWORD=$(kubectl get secret postgres-cluster-app -o jsonpath='{.data.password}' | base64 -d)
+kubectl exec -it postgres-cluster-1 -- psql -U postgres -d postgres -c "ALTER USER postgres WITH PASSWORD '$PASSWORD';"
+```
+
+Expected output: `ALTER ROLE`
+
+### Step 5: Verify Database
 
 ```bash
 kubectl get pods
 ```
 
 You should see `postgres-cluster-1` pod in "Running" status.
+
+Verify the table was created:
+```bash
+kubectl exec -it postgres-cluster-1 -- psql -U postgres -d mirrordb -c "\dt"
+```
+
+You should see the `transformations` table.
 
 ---
 

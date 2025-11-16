@@ -21,8 +21,6 @@ spec:
         ports:
         - containerPort: {{ .Values.service.port }}
         env:
-        - name: DATABASE_URL
-          value: "postgresql://$(DB_USER):$(DB_PASSWORD)@{{ .Values.database.host }}:{{ .Values.database.port }}/{{ .Values.database.name }}"
         - name: DB_USER
           valueFrom:
             secretKeyRef:
@@ -33,6 +31,12 @@ spec:
             secretKeyRef:
               name: postgres-cluster-app
               key: password
+        - name: DB_HOST
+          value: "{{ .Values.database.host }}"
+        - name: DB_PORT
+          value: "{{ .Values.database.port }}"
+        - name: DB_NAME
+          value: "{{ .Values.database.name }}"
         livenessProbe:
           httpGet:
             path: /api/health
