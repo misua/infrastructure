@@ -1,7 +1,7 @@
 replicaCount: 2
 
 image:
-  repository: mirrorapiregistry.azurecr.io/mirror-api  # Update with your ACR name
+  repository: mirrorapiregistry123.azurecr.io/mirror-api
   tag: latest
   pullPolicy: Always
 

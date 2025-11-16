@@ -297,21 +297,34 @@ docker rm mirror-test
 
 Expected response: `{"status":"ok"}`
 
-### Step 2: Push Image to ACR
+### Step 2: Generate Terraform Outputs
 
-Get ACR login server from Terraform outputs:
+First, create the outputs.json file from Terraform:
 
 ```bash
-cd ../infrastructure
+cd ../infrastructure/terraform
+terraform output -json > ../outputs.json
+cd ..
+```
+
+Get ACR login server:
+
+```bash
 ACR_SERVER=$(cat outputs.json | jq -r '.acr_login_server.value')
 echo $ACR_SERVER
 ```
 
+Expected output: `mirrorapiregistry123.azurecr.io` (or your ACR name)
+
+### Step 3: Push Image to ACR
+
 Login to ACR:
 
 ```bash
-az acr login --name mirrorapiregistry123  # Use your ACR name
+az acr login --name mirrorapiregistry123  # Use your ACR name from variables.tf
 ```
+
+Expected output: `Login Succeeded`
 
 Tag and push image:
 
@@ -321,31 +334,42 @@ docker tag mirror-api:test ${ACR_SERVER}/mirror-api:latest
 docker push ${ACR_SERVER}/mirror-api:latest
 ```
 
-### Step 3: Update Helm Chart Values
+Wait for the push to complete (shows "Pushed" for each layer).
 
-Edit `infrastructure/k8s/mirror-api-chart/values.yaml`:
+### Step 4: Verify Helm Chart Values
+
+The values.yaml should already be configured, but verify:
+
+```bash
+cd ../infrastructure/k8s
+cat mirror-api-chart/values.yaml | grep repository
+```
+
+Should show: `repository: mirrorapiregistry123.azurecr.io/mirror-api`
+
+If not, edit `infrastructure/k8s/mirror-api-chart/values.yaml` and update:
 
 ```yaml
 image:
-  repository: YOUR_ACR_SERVER/mirror-api  # Replace with your ACR server
+  repository: mirrorapiregistry123.azurecr.io/mirror-api  # Use your ACR server
   tag: latest
   pullPolicy: Always
 ```
 
-### Step 4: Deploy Application with Helm
+### Step 5: Deploy Application with Helm
 
 ```bash
 cd ../infrastructure/k8s
 helm install mirror-api ./mirror-api-chart
 ```
 
-### Step 5: Wait for Pods Ready
+### Step 6: Wait for Pods Ready
 
 ```bash
 kubectl wait --for=condition=Ready pod -l app=mirror-api --timeout=300s
 ```
 
-### Step 6: Verify Deployment
+### Step 7: Verify Deployment
 
 ```bash
 kubectl get pods -l app=mirror-api
