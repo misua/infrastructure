@@ -7,7 +7,7 @@ variable "resource_group_name" {
 variable "location" {
   description = "Azure region"
   type        = string
-  default     = "eastus"
+  default     = "southeastasia"  # Singapore - closest to Philippines
 }
 
 variable "cluster_name" {
@@ -19,19 +19,19 @@ variable "cluster_name" {
 variable "acr_name" {
   description = "Azure Container Registry name (must be globally unique)"
   type        = string
-  default     = "mirrorapiregistry"  # Change this to something unique
+  default     = "mirrorapiregistry123"  # Change this to something unique
 }
 
 variable "keyvault_name" {
   description = "Azure Key Vault name (must be globally unique)"
   type        = string
-  default     = "mirrorapikv"  # Change this to something unique
+  default     = "mirrorapikv123"  # Change this to something unique
 }
 
 variable "node_count" {
   description = "Number of AKS nodes (keep low for cost)"
   type        = number
-  default     = 2
+  default     = 1
 }
 
 variable "vm_size" {

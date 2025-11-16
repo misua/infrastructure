@@ -93,14 +93,14 @@ variable "keyvault_name" {
 Terraform needs a storage account for state management. Create it manually:
 
 ```bash
-# Create resource group for Terraform state
-az group create --name terraform-state-rg --location eastus
+# Create resource group for Terraform state (using Southeast Asia region - closest to Philippines)
+az group create --name terraform-state-rg --location southeastasia
 
 # Create storage account (name must be globally unique)
 az storage account create \
   --name tfstatemirrorapi123 \
   --resource-group terraform-state-rg \
-  --location eastus \
+  --location southeastasia \
   --sku Standard_LRS
 
 # Create container
