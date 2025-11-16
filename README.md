@@ -253,18 +253,9 @@ kubectl get secret postgres-cluster-app -o jsonpath='{.data.password}' | base64 
 echo
 ```
 
-Copy the username and password. You will need them in the next step.
+**Note**: The Helm chart will automatically reference this secret, so you don't need to manually create any additional secrets. The application will securely access the database credentials from the `postgres-cluster-app` secret.
 
-### Step 4: Create Application Database Secret
-
-Replace `YOUR_PASSWORD_HERE` with the password from Step 3:
-
-```bash
-kubectl create secret generic mirror-api-secret \
-  --from-literal=database-url="postgresql://postgres:YOUR_PASSWORD_HERE@postgres-cluster-rw:5432/mirrordb"
-```
-
-### Step 5: Verify Database
+### Step 4: Verify Database
 
 ```bash
 kubectl get pods
