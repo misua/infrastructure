@@ -643,7 +643,30 @@ pytest -v
 
 ## Cleanup
 
-### Step 1: Delete Kubernetes Resources
+### Automated Cleanup (Recommended)
+
+Use the provided cleanup script to remove all resources in one go:
+
+```bash
+cd infrastructure
+./cleanup.sh
+```
+
+The script will:
+- Delete all Kubernetes resources (Helm releases, PostgreSQL, operators, namespaces)
+- Delete all ACR images and repositories
+- Destroy Terraform infrastructure (AKS, ACR, Key Vault, networking)
+- Delete Terraform state storage
+- Remove local Docker images
+- Clean up local Terraform state files
+
+**Note**: The script will ask for confirmation before proceeding.
+
+### Manual Cleanup (Alternative)
+
+If you prefer to clean up manually:
+
+#### Step 1: Delete Kubernetes Resources
 
 ```bash
 cd infrastructure/k8s
