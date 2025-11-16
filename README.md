@@ -400,11 +400,17 @@ git push azure main
 2. Click "Service connections"
 3. Click "New service connection"
 4. Select "Docker Registry"
-5. Select "Azure Container Registry"
-6. Choose your subscription
-7. Select your ACR (mirrorapiregistry123)
-8. Service connection name: `ACR-ServiceConnection` (must match pipeline)
-9. Click "Save"
+5. **Registry type**: Select "Azure Container Registry"
+6. **Authentication Type**: Choose one of:
+   - **Service Principal** (recommended for production)
+   - **Managed Service Identity** (if running on Azure)
+   - **Workload Identity federation** (for enhanced security)
+7. Follow the prompts to authenticate with your Azure subscription
+8. Select your ACR: `mirrorapiregistry123`
+9. **Service connection name**: `ACR-ServiceConnection` (must match pipeline exactly)
+10. **Description**: Optional description
+11. **Security**: Optionally check "Grant access permission to all pipelines"
+12. Click "Save"
 
 ### Step 4: Create Pipeline
 
