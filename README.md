@@ -239,14 +239,21 @@ kubectl wait --for=condition=Ready cluster/postgres-cluster --timeout=300s
 
 This takes approximately 2-3 minutes.
 
-### Step 3: Get Database Password
+### Step 3: Get Database Credentials
+
+The CloudNativePG operator creates a secret named `postgres-cluster-app` (not `postgres-cluster-superuser`):
 
 ```bash
-kubectl get secret postgres-cluster-superuser -o jsonpath='{.data.password}' | base64 -d
+# Get username
+kubectl get secret postgres-cluster-app -o jsonpath='{.data.username}' | base64 -d
+echo
+
+# Get password
+kubectl get secret postgres-cluster-app -o jsonpath='{.data.password}' | base64 -d
 echo
 ```
 
-Copy this password. You will need it in the next step.
+Copy the username and password. You will need them in the next step.
 
 ### Step 4: Create Application Database Secret
 

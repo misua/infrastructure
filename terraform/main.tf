@@ -11,7 +11,7 @@ terraform {
   # State stored in Azure Storage (you'll need to create this manually first)
   backend "azurerm" {
     resource_group_name  = "terraform-state-rg"
-    storage_account_name = "tfstatemirrorapi"  # Must be globally unique
+    storage_account_name = "tfstatemirrorapi123"  # Must be globally unique
     container_name       = "tfstate"
     key                  = "devops-test.tfstate"
   }
