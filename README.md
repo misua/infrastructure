@@ -396,21 +396,38 @@ git push azure main
 
 ### Step 3: Create Service Connection
 
+**Note**: The "Azure Container Registry" option with Service Principal authentication often gets stuck on "Loading Registries". Use the manual "Others" method instead.
+
+#### Manual Configuration (Recommended):
+
 1. Go to Project Settings (bottom left)
 2. Click "Service connections"
 3. Click "New service connection"
 4. Select "Docker Registry"
-5. **Registry type**: Select "Azure Container Registry"
-6. **Authentication Type**: Choose one of:
-   - **Service Principal** (recommended for production)
-   - **Managed Service Identity** (if running on Azure)
-   - **Workload Identity federation** (for enhanced security)
-7. Follow the prompts to authenticate with your Azure subscription
-8. Select your ACR: `mirrorapiregistry123`
-9. **Service connection name**: `ACR-ServiceConnection` (must match pipeline exactly)
-10. **Description**: Optional description
-11. **Security**: Optionally check "Grant access permission to all pipelines"
-12. Click "Save"
+5. **Registry type**: Select **"Others"** (not Azure Container Registry)
+6. Fill in the following fields:
+
+Get your ACR credentials first:
+```bash
+# Get ACR username
+az acr credential show --name mirrorapiregistry123 --query "username" -o tsv
+
+# Get ACR password
+az acr credential show --name mirrorapiregistry123 --query "passwords[0].value" -o tsv
+```
+
+Then enter:
+- **Docker Registry**: `https://mirrorapiregistry123.azurecr.io`
+- **Docker ID**: `mirrorapiregistry123` (from command above)
+- **Docker Password**: (paste password from command above)
+- **Service Connection Name**: `ACR-ServiceConnection` (must match pipeline exactly)
+- **Description**: `Connection to Azure Container Registry`
+- **Security**: Check "Grant access permission to all pipelines"
+
+7. Click "Save"
+
+**Why "Others" instead of "Azure Container Registry"?**
+The Azure Container Registry option with Service Principal authentication has a known issue where the registry dropdown gets stuck loading. Using "Others" with admin credentials bypasses this and works reliably.
 
 ### Step 4: Create Pipeline
 
@@ -423,9 +440,24 @@ git push azure main
 7. Click "Continue"
 8. Click "Run"
 
-### Step 5: Verify Pipeline Execution
+### Step 5: Request Free Parallelism (Required for New Accounts)
 
-The pipeline will:
+**Important**: New Azure DevOps accounts don't have free parallelism enabled by default. You'll get this error:
+
+```
+No hosted parallelism has been purchased or granted
+```
+
+**Solution**:
+1. Fill out the free parallelism request form: https://aka.ms/azpipelines-parallelism-request
+2. Wait for approval (usually 2-3 business days)
+3. Microsoft will grant you 1 free parallel job for public projects
+
+**Alternative**: You can skip the pipeline for now since you've already deployed manually. The pipeline is for CI/CD automation, but your application is already running in AKS.
+
+### Step 6: Verify Pipeline Execution (After Parallelism Granted)
+
+Once approved, the pipeline will:
 - Run tests on all branches
 - Build and push Docker image only on main branch
 - Build stage only runs if tests pass
